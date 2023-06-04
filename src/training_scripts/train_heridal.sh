@@ -1,1 +1,0 @@
-python EfficientDetTrain.py --image_folder_path H:/heridal/trainImages/ --label_csv_path H:/heridal/trainImages/labels/labels.csv --out_path ../ --model_checkpoint ../lightning_logs/saved_checkpoints/epoch=111-step=44128.ckpt
