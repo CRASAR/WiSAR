@@ -113,7 +113,7 @@ if __name__ == '__main__':
 	parser.add_argument('--in_folder_path', type=str, help='The path to the folder that needs to be read.')
 	parser.add_argument('--out_folder_path', type=str, help='The path to the folder where all the predicted candidate images should be saved to.')
 	parser.add_argument('--model_path', type=str, help='The path to the folder where all the frames should be saved to.')
-	parser.add_argument('--id2path_file_path', type=str, help='The path to the file that maps the image hashes to their respective source files.')
+	parser.add_argument('--id2path_file_path', type=str, help='The path to the file that maps the image hashes to their respective source files.', default=None)
 	parser.add_argument('--tile_dim', type=int, help='The x and y dimension of the tile image that is passed to the model.', default=512)
 	parser.add_argument('--batch_size', type=int, help='The batch size that is used to pass tiles to the model.', default=3)
 	parser.add_argument('--model_confidence_threshold', type=float, help="The threshold (0-1) that is used to determine if a bounding box should be shown or not.", default=0.5)
