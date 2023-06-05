@@ -163,5 +163,3 @@ if __name__ == '__main__':
 		plot_workers = args.plot_workers,
 		logger=rootLogger
 		)
-
-	rootLogger.shutdown()
