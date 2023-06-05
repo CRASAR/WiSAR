@@ -107,7 +107,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Run the model on all the image files in a passed folder. Write the images that have predicted bounding boxes to the output folder for inspection.')
 	parser.add_argument('--in_folder_path', type=str, help='The path to the folder that needs to be read.')
 	parser.add_argument('--out_folder_path', type=str, help='The path to the folder where all the predicted candidate images should be saved to.')
-	parser.add_argument('--id2path_file_path', type=str, help='The path to the file that maps the image hashes to their respective source files.')
+	parser.add_argument('--id2path_file_path', type=str, help='The path to the file that maps the image hashes to their respective source files.', default=None)
 	parser.add_argument('--p_val_threshold', type=float, help='The p value threshold used to select in a point as anomolous.', default=0.0001)
 	parser.add_argument('--cluster_noise_threshold', type=int, help='The maximum number of anomolies that could be detected in the image before it is decided that there are no anomolies.', default=4)
 	parser.add_argument('--resize_output_size', type=int, help='The size that the image will be resized to prior to analysis. Resizing will not preserve the aspect ratio. A value less than 1 means that resizing will not be performed.', default=-1)
@@ -158,5 +158,3 @@ if __name__ == '__main__':
 		plot_workers = args.plot_workers,
 		logger=rootLogger
 		)
-
-	rootLogger.shutdown()
