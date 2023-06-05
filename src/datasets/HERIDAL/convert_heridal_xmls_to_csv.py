@@ -17,7 +17,6 @@ for file in os.listdir(labels_path):
 	#If we have an image associated with this xml file...
 	if(os.path.exists(img_path)):
 
-
 		root = ET.parse(joined_path).getroot()
 		for child in root:
 			if(child.tag == "object"):
