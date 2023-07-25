@@ -1,15 +1,16 @@
 from pathlib import Path
 from PIL import Image
 
+
 import numpy as np
 
 from utils.plot_utils import show_image
 
 class HERIDALDatasetAdaptor:
-    def __init__(self, images_dir_path, annotations_dataframe, oversample_multiplier=1):
+    def __init__(self, images_dir_path, image_files, annotations_dataframe, oversample_multiplier=1):
         self.images_dir_path = Path(images_dir_path)
         self.annotations_df = annotations_dataframe
-        self.images = self.annotations_df.image.unique().tolist()
+        self.images = list(image_files)
         self.oversample_multiplier = oversample_multiplier
 
     def __len__(self) -> int:

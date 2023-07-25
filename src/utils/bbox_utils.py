@@ -92,35 +92,38 @@ def bbox_confusion_matrix_VOC2012(pred_bboxes, actual_bboxes):
 def bbox_confusion_matrix_SARAPD(pred_bboxes, actual_bboxes):
     return bbox_confusion_matrix(pred_bboxes, actual_bboxes, 0.0025, sys.maxsize)
 
-def union_overlapping_bounding_boxes(bounding_boxes, iou_thr=0):
-    unioned_bounding_boxes = []
-    unmatched_bounding_boxes = bounding_boxes[:]
+def union_overlapping_bounding_boxes(bounding_boxes, confidences, iou_thr=0):
+    unioned_bounding_boxes_confs = []
+    unmatched_bounding_boxes_confs = list(zip(bounding_boxes, confidences))
     any_match = True
     while(any_match):
         any_match = False
         idx = 0
-        while(idx < len(unmatched_bounding_boxes)):
-            box_i = unmatched_bounding_boxes[idx]
+        while(idx < len(unmatched_bounding_boxes_confs)):
+            box_i, conf_i = unmatched_bounding_boxes_confs[idx]
             match = False
-            for j in range(0, len(unioned_bounding_boxes)):
-                box_j = unioned_bounding_boxes[j]
+            for j in range(0, len(unioned_bounding_boxes_confs)):
+                box_j, conf_j = unioned_bounding_boxes_confs[j]
                 iou = bb_intersection_over_union(box_i, box_j)
                 if(iou > iou_thr):
                     x_min = min(box_i[0], box_j[0])
                     y_min = min(box_i[1], box_j[1])
                     x_max = max(box_i[2], box_j[2])
                     y_max = max(box_i[3], box_j[3])
-                    unioned_bounding_boxes[j] = [x_min, y_min, x_max, y_max]
-                    unmatched_bounding_boxes.pop(idx)
+                    unioned_bounding_boxes_confs[j] = ([x_min, y_min, x_max, y_max], max(conf_i, conf_j))
+                    unmatched_bounding_boxes_confs.pop(idx)
                     match = True
                     any_match = True
                     idx -= 1
                     
             if(not match):
-                unioned_bounding_boxes.append(box_i)
+                unioned_bounding_boxes_confs.append((box_i, conf_i))
 
             idx+=1
-        unmatched_bounding_boxes = unioned_bounding_boxes[:]
-        unioned_bounding_boxes = []
+        unmatched_bounding_boxes_confs = unioned_bounding_boxes_confs[:]
+        unioned_bounding_boxes_confs = []
 
-    return unmatched_bounding_boxes
+    unmatched_bounding_boxes = [bb for bb, _ in unmatched_bounding_boxes_confs]
+    unmatched_confidences = [c for _, c in unmatched_bounding_boxes_confs]
+
+    return unmatched_bounding_boxes, unmatched_confidences

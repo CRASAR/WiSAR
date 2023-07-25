@@ -54,6 +54,8 @@ def tiled_image_inference_from_folder(in_folder_path,
 	model = EfficientDetModel.load_from_checkpoint(model_path)
 	model.prediction_confidence_threshold = model_confidence_threshold
 	model.eval()
+	#TODO: LOOK INTO JIT EVALUATION USING TORCH SCRIPT --> https://pytorch.org/tutorials/beginner/Intro_to_TorchScript_tutorial.html
+	#model = torch.jit.script(model)
 	logger.info("Loaded model:" + str(model_path))
 
 	#First we find all the valid paths and sort them
@@ -73,15 +75,13 @@ def tiled_image_inference_from_folder(in_folder_path,
 			image = Image.open(path)
 
 			#Run the prediction on the image
-			bounding_boxes, error_code = tiled_image_inference(model, image, tile_dim, batch_size, union_overlapping_bboxes)
+			bounding_boxes, confidences, error_code = tiled_image_inference(model, image, tile_dim, batch_size, union_overlapping_bboxes)
 
 			if(error_code == TILE_INFERENCE_ERROR):
 				logger.warning('Encountered an error when performing inference on a tile. Skipping tile and continuing.')
-				logger.debug(str(e))
 				logger.debug(str(file))
 			if(error_code == BBOX_UNION_ERROR):
 				logger.warning('Encountered an error when unioning predicted bounding boxes. Returning all bounding boxes as a fallback.')
-				logger.debug(str(e))
 				logger.debug(str(file))
 
 			#If we have made a valid predictions and there are bounding boxes in that prediction...
@@ -162,4 +162,4 @@ if __name__ == '__main__':
 		run_id=run_id,
 		plot_workers = args.plot_workers,
 		logger=rootLogger
-		)
+	)

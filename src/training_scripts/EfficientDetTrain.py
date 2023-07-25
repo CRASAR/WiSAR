@@ -2,6 +2,9 @@ def main():
 	import sys
 	sys.path.append('..')
 	
+	from os import listdir
+	from os.path import join, isfile
+
 	import pandas as pd
 	import numpy as np
 	import argparse
@@ -20,10 +23,11 @@ def main():
 	parser.add_argument('--model_checkpoint', type=str, help='The path to the model checkpoint from which training should resume.', default=None)
 	parser.add_argument('--image_size', type=int, help='The x and y dimension of the image that is passed to the model.', default=512)
 	parser.add_argument('--num_classes', type=int, help='The number of classes that the model needs to learn to detect', default=1)
-	parser.add_argument('--batch_size', type=int, help='The batch size that is used to pass tiles to the model.', default=6)
+	parser.add_argument('--batch_size', type=int, help='The batch size that is used to pass tiles to the model.', default=3)
 	parser.add_argument('--max_epochs', type=int, help="The maximum number of model training epochs that should be run.", default=1000)
 	parser.add_argument('--data_gen_workers', type=int, help="The number of worker processes that will be used for data generation", default=8)
-	parser.add_argument('--precision', type=str, help="The floating point precision with which the model should be trained.", default="16")
+	parser.add_argument('--precision', type=str, help="The floating point precision with which the model should be trained.", default="32")
+	parser.add_argument('--image_extension', type=str, help="The extension of the image files that should be used to train the model", default="JPG")
 	args = parser.parse_args()
 
 	#TODO: Add these as file arguments
@@ -33,19 +37,19 @@ def main():
 
 	#Construct the train and validation sets
 	labels_df = pd.read_csv(args.label_csv_path)
-	file_labels = list(labels_df["image"].unique())
-	split_rs.shuffle(file_labels)
-	split_index = int(len(file_labels)*train_proportion)
+	image_files = [f for f in listdir(args.image_folder_path) if (isfile(join(args.image_folder_path, f)) and str(f).endswith(args.image_extension))]
+	split_rs.shuffle(image_files)
+	split_index = int(len(image_files)*train_proportion)
 	
-	train_labels = file_labels[:split_index]
-	valid_labels = file_labels[split_index:]
+	train_files = image_files[:split_index]
+	valid_files = image_files[split_index:]
 
-	train_df = labels_df[labels_df["image"].isin(train_labels)]
-	valid_df = labels_df[labels_df["image"].isin(valid_labels)]
+	train_df = labels_df[labels_df["image"].isin(train_files)]
+	valid_df = labels_df[labels_df["image"].isin(valid_files)]
 
 	#Initialize the training and validation datasets
-	train_ds = HERIDALDatasetAdaptor(args.image_folder_path, train_df, oversample_multiplier=1)
-	valid_ds = HERIDALDatasetAdaptor(args.image_folder_path, valid_df, oversample_multiplier=20)
+	train_ds = HERIDALDatasetAdaptor(args.image_folder_path, train_files, train_df, oversample_multiplier=5)
+	valid_ds = HERIDALDatasetAdaptor(args.image_folder_path, valid_files, valid_df, oversample_multiplier=20)
 
 	dm = EfficientDetDataModule(train_dataset_adaptor=train_ds, 
 	        validation_dataset_adaptor=valid_ds,

@@ -14,12 +14,10 @@ class BBoxOneSafeRandomCrop(A.BBoxSafeRandomCrop):
     def get_params_dependent_on_targets(self, params):
         img_h, img_w = params["image"].shape[:2]
         if len(params["bboxes"]) == 0:
-            return {
-                "h_start": random.random(),
-                "w_start": random.random(),
-                "crop_height": self.height,
-                "crop_width": self.width
-            }
+            x_min = int(random.random()*(img_w-self.width))
+            y_min = int(random.random()*(img_h-self.height))
+            return {"x_min": x_min, "y_min": y_min, "x_max": x_min+self.width, "y_max": y_min+self.height} 
+            
         #Select a bbox as a target
         target_bbox = random.choice(params["bboxes"])
         x1,y1,x2,y2,_ = target_bbox
@@ -84,7 +82,7 @@ def get_train_transforms(target_img_size=512):
     )
 
 def get_valid_transforms(target_img_size=512):
-    return get_train_transforms(target_img_size) #unless we decide to do something different, we validate on the same augmentations we train on
+    return get_train_transforms(target_img_size)
 
 def get_inference_transforms(target_img_size=512, normalize=True):
     tfs = [A.Resize(target_img_size, target_img_size)]
