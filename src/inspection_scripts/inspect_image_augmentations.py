@@ -19,8 +19,8 @@ seed = 12345
 rs = np.random.RandomState(seed=seed)
 convert_to_PIL = transforms.ToPILImage()
 
-train_data_path = "H:/heridal/trainImages"
-labels_df = pd.read_csv("H:/heridal/trainImages/labels/labels.csv")
+train_data_path = "H:/heridal_relabel/trainImages"
+labels_df = pd.read_csv("H:/heridal_relabel/trainImages/labels/labels.csv")
 
 file_labels = list(labels_df["image"].unique())
 rs.shuffle(file_labels)

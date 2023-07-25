@@ -43,7 +43,7 @@ class EfficientDetModel(LightningModule):
         num_classes=1,
         img_size=512,
         prediction_confidence_threshold=0.2,
-        learning_rate=0.0002,
+        learning_rate=0.0001,
         wbf_iou_threshold=0.44,
         inference_transforms=get_inference_transforms(target_img_size=512, normalize=True),
         model_architecture='tf_efficientnetv2_l',
@@ -57,14 +57,25 @@ class EfficientDetModel(LightningModule):
         self.lr = learning_rate
         self.wbf_iou_threshold = wbf_iou_threshold
         self.inference_tfms = inference_transforms
-
+        self.save_hyperparameters()
 
     def forward(self, images, targets):
         return self.model(images, targets)
 
     def configure_optimizers(self):
-        return torch.optim.AdamW(self.model.parameters(), lr=self.lr)
+        self.opt = torch.optim.AdamW(self.model.parameters(), lr=self.lr)
 
+        self.reduce_lr_on_plateau = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            self.opt,
+            mode='min',
+            factor=0.1,
+            patience=5,
+            verbose=True,
+            cooldown=5,
+            min_lr=1e-8,
+        )
+
+        return {"optimizer":self.opt, "lr_scheduler":self.reduce_lr_on_plateau, "monitor":"valid_loss"}
 
     def training_step(self, batch, batch_idx):
         images, annotations, _, image_ids = batch
@@ -76,13 +87,13 @@ class EfficientDetModel(LightningModule):
             "box_loss": losses["box_loss"].detach(),
         }
 
-        self.log("train_loss", losses["loss"], on_step=True, on_epoch=True, prog_bar=True,
+        self.log("train_loss", losses["loss"], on_step=False, on_epoch=True, prog_bar=True,
                  logger=True)
         self.log(
-            "train_class_loss", losses["class_loss"], on_step=True, on_epoch=True, prog_bar=True,
+            "train_class_loss", losses["class_loss"], on_step=False, on_epoch=True, prog_bar=False,
             logger=True
         )
-        self.log("train_box_loss", losses["box_loss"], on_step=True, on_epoch=True, prog_bar=True,
+        self.log("train_box_loss", losses["box_loss"], on_step=False, on_epoch=True, prog_bar=False,
                  logger=True)
 
         return losses['loss']
@@ -106,17 +117,25 @@ class EfficientDetModel(LightningModule):
             "box_loss": outputs["box_loss"].detach(),
         }
 
-        self.log("valid_loss", outputs["loss"], on_step=True, on_epoch=True, prog_bar=True,
+        self.log("valid_loss", outputs["loss"], on_step=False, on_epoch=True, prog_bar=True,
                  logger=True, sync_dist=True)
         self.log(
-            "valid_class_loss", logging_losses["class_loss"], on_step=True, on_epoch=True,
-            prog_bar=True, logger=True, sync_dist=True
+            "valid_class_loss", logging_losses["class_loss"], on_step=False, on_epoch=True,
+            prog_bar=False, logger=True, sync_dist=True
         )
-        self.log("valid_box_loss", logging_losses["box_loss"], on_step=True, on_epoch=True,
-                 prog_bar=True, logger=True, sync_dist=True)
+        self.log("valid_box_loss", logging_losses["box_loss"], on_step=False, on_epoch=True,
+                 prog_bar=False, logger=True, sync_dist=True)
 
         return {'loss': outputs["loss"], 'batch_predictions': batch_predictions}
     
+    def validation_end(self, outputs):
+        avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
+        res = {'avg_val_loss': avg_loss}
+        
+        self.reduce_lr_on_plateau.step(avg_loss)
+
+        return res
+
     
     @typedispatch
     def predict(self, images: List):
