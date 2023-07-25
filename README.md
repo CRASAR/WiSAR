@@ -1,6 +1,9 @@
 # WiSAR - (Wi)lderness (S)earch (A)nd (R)escue 
 This Repository contains supervised and unsupervised methods for wilderness search and rescue.
 
+## Replication of "Open Problems in Computer Vision for Wilderness SAR and The Search for Patricia Wu-Murad"
+The details necessary of this work can be found in [this readme file](https://github.tamu.edu/hrail/WiSAR/blob/ai-hadr-iccv-2023/README-ai-hadr-iccv-2023.md).
+
 ## So, you recieved a dataset from a real world Wilderness SAR team...
 1) Extract frames from the videos that you want to analyze, and copy the raw images.
     
