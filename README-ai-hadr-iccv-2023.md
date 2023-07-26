@@ -1,6 +1,6 @@
 # Replication of "Open Problems in Computer Vision for Wilderness SAR and The Search for Patricia Wu-Murad"
 
-1) Checkout the [ai-hadr-iccv-2023](https://github.tamu.edu/hrail/WiSAR/tree/ai-hadr-iccv-2023) branch of this repository.
+1) Checkout the [ai-hadr-iccv-2023](https://github.com/TManzini/WiSAR/tree/ai-hadr-iccv-2023) branch of this repository.
 
 ## To Replicate the results of the RX classifier on the Wu-Murad Dataset...
 
