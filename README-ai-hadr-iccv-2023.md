@@ -1,7 +1,7 @@
 # Replication of "[Open Problems in Computer Vision for Wilderness SAR and The Search for Patricia Wu-Murad](https://arxiv.org/abs/2307.14527)"
 
 1) Checkout the [ai-hadr-iccv-2023](https://github.com/CRASAR/WiSAR/tree/ai-hadr-iccv-2023) branch of this repository.
-2) Download the original imagery from the search [here]().
+2) Download the original imagery from the search [here](https://www.dropbox.com/scl/fi/57sqh5pemdk28otl5c2uz/CRASAR_Wu_Murad_Dataset.zip?rlkey=zyha1qycn2v597r77jhn8xpui&dl=0).
 3) Download the models referenced in the paper: [Tiled_EffecientDET<sub>174</sub>](https://www.dropbox.com/scl/fi/0qj9g6ojl27eh60phnp2i/epoch-174-step-25725.ckpt?rlkey=qmfexrft0lhhkn32r4sscod7j&dl=0) & [Tiled_EffecientDET<sub>84</sub>](https://www.dropbox.com/scl/fi/0y7wp7ravkb310jxdguyz/epoch-84-step-33490.ckpt?rlkey=j8n6y1czt79nwzx008icb1ivg&dl=0)
 
 ## To extract the images and video frames that are to be fed to the models...
