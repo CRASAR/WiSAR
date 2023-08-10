@@ -1,5 +1,5 @@
 # WiSAR - (Wi)lderness (S)earch (A)nd (R)escue 
-This Repository contains supervised and unsupervised methods for wilderness search and rescue.
+This repository contains supervised and unsupervised methods for wilderness search and rescue. This branch specifically, "ai-hadr-iccv-2023", contains a checkpoint of the code at the time of writing the paper "[Open Problems in Computer Vision for Wilderness SAR and The Search for Patricia Wu-Murad](https://arxiv.org/abs/2307.14527)".
 
 ## To replicate the results of "[Open Problems in Computer Vision for Wilderness SAR and The Search for Patricia Wu-Murad](https://arxiv.org/abs/2307.14527)"
 
