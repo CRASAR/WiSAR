@@ -3,7 +3,7 @@ This Repository contains supervised and unsupervised methods for wilderness sear
 
 ## To replicate the results of "[Open Problems in Computer Vision for Wilderness SAR and The Search for Patricia Wu-Murad](https://arxiv.org/abs/2307.14527)"
 
-1) Checkout the [ai-hadr-iccv-2023](https://github.com/TManzini/WiSAR/tree/ai-hadr-iccv-2023) branch of this repository.
+1) Checkout the [ai-hadr-iccv-2023](https://github.com/CRASAR/WiSAR/tree/ai-hadr-iccv-2023) branch of this repository.
 2) Follow the details described in the [replication readme file](https://github.com/TManzini/WiSAR/blob/ai-hadr-iccv-2023/README-ai-hadr-iccv-2023.md).
     
 ## So, you recieved a dataset from a real world Wilderness SAR team...
